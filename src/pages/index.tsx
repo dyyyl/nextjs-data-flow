@@ -7,11 +7,30 @@ import useUser from 'shared/hooks/useUser';
 
 const IndexPage: NextPage = () => {
   const { data, isLoading } = useUser('dyyyl');
-  if (!isLoading) console.log({ data });
+
   return (
-    <div>
+    <main>
       <h1>Hello, all!</h1>
-    </div>
+      {isLoading && <p>Loading...</p>}
+      {data && (
+        <>
+          <img
+            src={data.avatarUrl}
+            alt={`${data.name}'s GitHub profile picture`}
+            style={{
+              width: '30vmin',
+              borderRadius: '100%',
+            }}
+          />
+          <h2>{data.name}</h2>
+          <article>
+            <section>
+              <p>{data.bio}</p>
+            </section>
+          </article>
+        </>
+      )}
+    </main>
   );
 };
 
@@ -20,7 +39,7 @@ const IndexPage: NextPage = () => {
 // > {
 //   const queryClient = new QueryClient();
 
-//   await queryClient.prefetchQuery(['user'], () => useUser('dyyyl'));
+//   await queryClient.prefetchQuery(['user', userId], () => getUser(userId));
 
 //   return {
 //     props: {
