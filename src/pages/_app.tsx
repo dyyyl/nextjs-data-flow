@@ -14,6 +14,7 @@ const App: NextPage<AppProps> = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>
+        <title>WHO WILL BE THE MOST POPULAR DEV</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 

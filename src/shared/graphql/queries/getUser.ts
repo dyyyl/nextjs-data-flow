@@ -8,34 +8,10 @@ const query = gql`
     user(login: $login) {
       id
       name
-      bio
-      createdAt
       avatarUrl
-      email
-      location
 
       followers {
         totalCount
-      }
-
-      repositories(first: 3, orderBy: { field: STARGAZERS, direction: DESC }) {
-        totalCount
-        nodes {
-          id
-          name
-          createdAt
-          description
-          url
-          languages(first: 10) {
-            nodes {
-              id
-              name
-              color
-            }
-          }
-          stargazerCount
-          forkCount
-        }
       }
     }
   }
