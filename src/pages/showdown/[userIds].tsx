@@ -2,61 +2,36 @@ import { NextPage } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
-import React, { useState } from 'react';
+import React from 'react';
 import { QueryClient } from 'react-query';
 import { dehydrate, DehydratedState } from 'react-query/hydration';
 
 import { Main, Section } from 'shared/components/Containers';
 import { Big, Title } from 'shared/components/Typography';
 import User from 'shared/components/User';
+
 import { getUser } from 'shared/graphql/queries/getUser';
+import useUser from 'shared/hooks/useUser';
 
 const UserShowdownPage: NextPage = () => {
-  const [
-    firstUserFollowerCount,
-    setFirstUserFollowerCount,
-  ] = useState<number>();
-
-  const [
-    secondUserFollowerCount,
-    setSecondUserFollowerCount,
-  ] = useState<number>();
-
   const router = useRouter();
 
   const { userIds } = router.query;
 
   const [firstUserId, secondUserId] = String(userIds).split('-vs-');
 
+  const { data: firstUser } = useUser(firstUserId);
+  const { data: secondUser } = useUser(secondUserId);
+
   return (
     <Main>
-      {firstUserFollowerCount && secondUserFollowerCount ? (
-        <Title>NOT EVEN CLOSE</Title>
-      ) : (
-        <Title>WHO WILL WIN?</Title>
-      )}
+      <Title>NOT EVEN CLOSE</Title>
       <Section>
-        <User
-          userId={firstUserId}
-          setFollowerCount={setFirstUserFollowerCount}
-          win={
-            firstUserFollowerCount &&
-            secondUserFollowerCount &&
-            firstUserFollowerCount > secondUserFollowerCount
-          }
-        />
+        <User user={firstUser} />
 
         <Big>VS.</Big>
 
-        <User
-          userId={secondUserId}
-          setFollowerCount={setSecondUserFollowerCount}
-          win={
-            firstUserFollowerCount &&
-            secondUserFollowerCount &&
-            secondUserFollowerCount > firstUserFollowerCount
-          }
-        />
+        <User user={secondUser} />
       </Section>
 
       <Link href="/">
