@@ -14,7 +14,7 @@ describe('Index Page', () => {
       </QueryClientProvider>,
     );
 
-    const title = screen.getByText(/Hello, all!/i);
+    const title = screen.getByText(/WHO IS THE MOST POPULAR DEVELOPER/i);
 
     expect(title).toBeInTheDocument;
   });
