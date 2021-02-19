@@ -1,13 +1,15 @@
 import { NextPage } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { ParsedUrlQuery } from 'querystring';
 import React, { useState } from 'react';
-// import { QueryClient } from 'react-query';
-// import { dehydrate, DehydratedState } from 'react-query/hydration';
+import { QueryClient } from 'react-query';
+import { dehydrate, DehydratedState } from 'react-query/hydration';
 
 import { Main, Section } from 'shared/components/Containers';
 import { Big, Title } from 'shared/components/Typography';
 import User from 'shared/components/User';
+import { getUser } from 'shared/graphql/queries/getUser';
 
 const UserShowdownPage: NextPage = () => {
   const [
@@ -64,18 +66,36 @@ const UserShowdownPage: NextPage = () => {
   );
 };
 
-// export async function getStaticProps(): Promise<
-//   Record<string, Record<string, DehydratedState>>
-// > {
-//   const queryClient = new QueryClient();
+interface ContextProps {
+  params: ParsedUrlQuery;
+}
 
-//   await queryClient.prefetchQuery(['user', userId], () => getUser(userId));
+interface ReturnProps {
+  props: {
+    dehydratedState: DehydratedState;
+  };
+}
 
-//   return {
-//     props: {
-//       dehydratedState: dehydrate(queryClient),
-//     },
-//   };
-// }
+export async function getServerSideProps({
+  params,
+}: ContextProps): Promise<ReturnProps> {
+  const queryClient = new QueryClient();
+  const { userIds } = params;
+  const [firstUserId, secondUserId] = String(userIds).split('-vs-');
+
+  await queryClient.prefetchQuery(['user', firstUserId], () =>
+    getUser(firstUserId),
+  );
+
+  await queryClient.prefetchQuery(['user', secondUserId], () =>
+    getUser(secondUserId),
+  );
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
+}
 
 export default UserShowdownPage;
